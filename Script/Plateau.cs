@@ -19,10 +19,14 @@ public class Plateau : MonoBehaviour{
             instance = this;
         }else{
             Destroy(gameObject);
+            return;
         }
 
         plateau = new int[longeur, largeur];
-        cases = new GameObject[longeur, largeur];
+        cases = new GameObject[longeur, largeur];     
+    }
+
+    public void Start(){
         for(int i = 0; i < longeur; i++){
             for(int j = 0; j < largeur; j++){
                 plateau[i, j] = Random.Range(0, 16);
@@ -33,8 +37,6 @@ public class Plateau : MonoBehaviour{
                 cases[i, j] = caseObj;
             }
         }
-
-        
     }
 
     public void Rotate(int x, int y){
