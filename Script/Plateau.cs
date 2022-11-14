@@ -11,10 +11,14 @@ public class Plateau : MonoBehaviour{
     public GameObject parent;
 
     //données du plateau
-    int[,] plateau;
-    bool[,] sources;
-    bool[,] watered;
-    GameObject[,] cases;
+    [HideInInspector]
+    public int[,] plateau;
+    [HideInInspector]
+    public bool[,] sources;
+    [HideInInspector]
+    public bool[,] watered;
+    [HideInInspector]
+    public GameObject[,] cases;
 
     public static Plateau instance;
 
@@ -33,18 +37,33 @@ public class Plateau : MonoBehaviour{
     }
 
     public void Start(){
+        Setup();
+    }
+
+    public void Win(){
+        Debug.Log("You win");
+        Setup();
+    }
+
+    public void Setup(){
+        //on vide le plateau
+        for(int i = 0; i < longeur; i++){
+            for(int j = 0; j < largeur; j++){
+                Destroy(cases[i, j]);
+                cases[i, j] = null;
+            }
+        }
         //generation du plateau
         Labyrinth lab = new Labyrinth(longeur, largeur);
         lab.Generate(longeur/2, largeur/2);
-        lab.RandomizeRotation();
-        plateau = lab.GetGrille();
+        
 
         for(int i = 0; i < longeur; i++){
             for(int j = 0; j < largeur; j++){
                 //on ajoute la case du GameObject
                 GameObject caseObj = Instantiate(casePrefab, parent.transform);
-                caseObj.transform.position = new Vector3(i, -j, 0);
-                caseObj.GetComponent<Case>().UpdateSprite(plateau[i, j]);
+                caseObj.transform.position = new Vector3(i+.5f, -j-.5f, 0);
+                
                 cases[i, j] = caseObj;
 
                 sources[i, j] = false;
@@ -53,6 +72,17 @@ public class Plateau : MonoBehaviour{
         }
         sources[0, 0] = true;
         sources[longeur - 1, largeur - 1] = true;
+
+        //on setup le plateau
+        lab.RandomizeRotation(sources);
+        plateau = lab.GetGrille();
+
+        //on update les sprites
+        for(int i = 0; i < longeur; i++){
+            for(int j = 0; j < largeur; j++){
+                cases[i,j].GetComponent<Case>().UpdateSprite(plateau[i, j], sources[i, j]);
+            }
+        }
 
         //on met a jour les cases
         UpdateFlow();
@@ -112,7 +142,7 @@ public class Plateau : MonoBehaviour{
         }
         for(int i = 0; i < longeur; i++){
             for(int j = 0; j < largeur; j++){
-                cases[i, j].GetComponent<Case>().UpdateWatered(sources[i, j], watered[i, j]);
+                cases[i, j].GetComponent<Case>().UpdateWatered(watered[i, j]);
             }
         }
     }
@@ -124,7 +154,7 @@ public class Plateau : MonoBehaviour{
         value *= 2;
         value += last;
         plateau[x, y] = value;
-        cases[x, y].GetComponent<Case>().UpdateSprite(value);
+        cases[x, y].GetComponent<Case>().Rotate(value);
         UpdateFlow();
     }
 

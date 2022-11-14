@@ -127,11 +127,13 @@ public class Labyrinth{
         grille[x, y] = value;
     }
 
-    public void RandomizeRotation(){
+    public void RandomizeRotation(bool[,] locked){
         for(int i = 0; i < longeur; i++){
             for(int j = 0; j < largeur; j++){
-                for(int k = 0; k < Random.Range(0, 4); k++){
-                    Rotate(i, j);
+                if(!locked[i, j]){
+                    for(int k = 0; k < Random.Range(0, 4); k++){
+                        Rotate(i, j);
+                    }
                 }
             }
         }

@@ -13,7 +13,7 @@ public class TouchManager : MonoBehaviour
                 Vector3 touchPos = Camera.main.ScreenToWorldPoint(touch.position);
                 int x = (int)touchPos.x;
                 int y = (int)-touchPos.y;
-                if(x >= 0 && x < Plateau.instance.longeur && y >= 0 && y < Plateau.instance.largeur){
+                if(x >= 0 && x < Plateau.instance.longeur && y >= 0 && y < Plateau.instance.largeur && !Plateau.instance.sources[x, y]){
                     Plateau.instance.Rotate(x,y);
                 }
             }

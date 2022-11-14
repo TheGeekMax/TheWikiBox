@@ -5,6 +5,7 @@ using UnityEngine;
 public class SpriteManager : MonoBehaviour
 {
     public Sprite[] sprites;
+    public Sprite waterSource;
     public static SpriteManager instance;
 
     void Awake(){
